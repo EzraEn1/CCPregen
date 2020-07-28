@@ -62,8 +62,8 @@ public class PregenCommand extends CommandBase {
         int alt = hg.find(args[0],args[1],sender);
         BlockPos min = new BlockPos(X,alt*256,Z);
         BlockPos max = new BlockPos(X+511,(alt*256)+255,Z+511);
-        String path = PregenCommand.getProtectionDomain().getCodeSource().getLocation().getPath();
-        path = path - "/mods";
+        //String path = PregenCommand.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String path = "placeholder";
         path = path + "/TerraPreGenerated/height.txt";
         File Alti = new File(path);
         if (Alti.createNewFile()){
