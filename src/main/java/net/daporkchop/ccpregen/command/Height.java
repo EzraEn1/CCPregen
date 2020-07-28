@@ -1,21 +1,22 @@
 package net.daporkchop.ccpregen.command;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import io.github.opencubicchunks.cubicchunks.api.worldgen.ICubeGenerator;
+import io.github.opencubicchunks.cubicchunks.core.server.CubeProviderServer;
+import io.github.terra121.EarthTerrainProcessor;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkProvider;
+
 public class Height {
 
-    public int Find(double regionX, double regionZ, ICommandSender sender ){
+    public int Find(int regionX, int regionZ, ICommandSender sender ){
         //getworld
         World world = sender.getEntityWorld();
         IChunkProvider cp = world.getChunkProvider();
 
-        if(!(cp instanceof CubeProviderServer)) {
-            throw new CommandException("terra121.error.notcc", new Object[0]);
-        }
 
         ICubeGenerator gen = ((CubeProviderServer)cp).getCubeGenerator();
-
-        if(!(gen instanceof EarthTerrainProcessor)) {
-            throw new CommandException("terra121.error.notterra", new Object[0]);
-        }
 
         EarthTerrainProcessor terrain = (EarthTerrainProcessor)gen;
 
@@ -24,7 +25,7 @@ public class Height {
         int Z = 512*regionZ;
         double coord[] = terrain.projection.toGeo(X,Z);
         double height = terrain.heights.estimateLocal(coord[0],coord[1]);
-        double alt = (int) height/256;
+        int alt = (int) height/256;
         return alt;
 
     }
