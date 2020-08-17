@@ -20,6 +20,7 @@
 
 package net.daporkchop.ccpregen;
 
+import io.github.ezraen.terrapregen.TerraPregen;
 import net.daporkchop.ccpregen.command.PausePregenCommand;
 import net.daporkchop.ccpregen.command.PregenCommand;
 import net.daporkchop.ccpregen.command.PregenCubesCommand;
@@ -58,12 +59,14 @@ public class CCPregen {
         PermissionAPI.registerNode(MODID + ".command.ccpregen_stop", DefaultPermissionLevel.OP, "Allows to run the /ccpregen_stop command");
         PermissionAPI.registerNode(MODID + ".command.ccpregen_pause", DefaultPermissionLevel.OP, "Allows to run the /ccpregen_pause command");
         PermissionAPI.registerNode(MODID + ".command.ccpregen_resume", DefaultPermissionLevel.OP, "Allows to run the /ccpregen_resume command");
+        PermissionAPI.registerNode(MODID + ".command.terrapregen", DefaultPermissionLevel.OP, "Allows to run the /terrapregen command");
 
         event.registerServerCommand(new PregenCommand());
         event.registerServerCommand(new PregenCubesCommand());
         event.registerServerCommand(new StopPregenCommand());
         event.registerServerCommand(new PausePregenCommand());
         event.registerServerCommand(new ResumePregenCommand());
+        event.registerServerCommand(new TerraPregen.TerraPregenCommand());
 
         PregenState.loadState(event.getServer());
     }
