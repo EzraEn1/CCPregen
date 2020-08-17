@@ -34,17 +34,14 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.WorldWorkerManager;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+import java.io.*;
+
+
 /**
  * @author DaPorkchop_
  */
 public class PregenCommand extends CommandBase {
-    public static BlockPos parseBlockPos(ICommandSender sender, String[] args, int startIndex) throws NumberInvalidException {
-        Vec3d base = sender.getPositionVector();
-        return new BlockPos(
-                parseDouble(base.x, args[startIndex], -30000000, 30000000, false),
-                parseDouble(base.y, args[startIndex + 1], Integer.MIN_VALUE, Integer.MAX_VALUE, false),
-                parseDouble(base.z, args[startIndex + 2], -30000000, 30000000, false));
-    }
+
 
     @Override
     public String getName() {
@@ -53,18 +50,47 @@ public class PregenCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/ccpregen <minX> <minY> <minZ> <maxX> <maxY> <maxZ> [dimension]";
+        return "/ccpregen <regionX> <regionZ>";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length < 6)    {
+        if (args.length < 2)    {
             sender.sendMessage(new TextComponentString(this.getUsage(sender)));
             return;
         }
-        BlockPos min = parseBlockPos(sender, args, 0);
-        BlockPos max = parseBlockPos(sender, args, 3);
-        int dimension = args.length == 6 ? sender.getEntityWorld().provider.getDimension() : parseInt(args[7]);
+        Height hg = new Height();
+        int X = 512*Integer.parseInt(args[0]);
+        int Z = 512*Integer.parseInt(args[1]);
+        int String.valueOf(123) = hg.Find(Integer.parseInt(args[0]),Integer.parseInt(args[1]),sender);
+        BlockPos min = new BlockPos(X,alt*256,Z);
+        BlockPos max = new BlockPos(X+511,(alt*256)+255,Z+511);
+        String path = "G:\\test\\pregen\\TerraPreGenerated\\height.txt";
+        File Alti = new File(path);
+        try {
+            if (Alti.createNewFile()){
+                System.out.println("File already exist");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Writer wr = null;
+        try {
+            wr = new FileWriter(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            wr.write(String.valueOf(alt);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            wr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int dimension = 0;
         if (min.getX() > max.getX() || min.getY() > max.getY() || min.getZ() > max.getZ())  {
             sender.sendMessage(new TextComponentString("Min coordinates may not be greater than max coordinates!"));
         } else if (!PregenState.startPregeneration(sender, min, max, dimension))   {
