@@ -15,12 +15,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import io.github.ezraen.bedrockheadless.Main;
 
 import static java.nio.file.Files.createDirectory;
 
 public class TerraPregen {
+
     public static class TerraPregenCommand extends PregenCommand {
         @Override
         public String getName() {
@@ -53,7 +54,7 @@ public class TerraPregen {
             //BlockPos max = new BlockPos(X+511,(alt*256)+255,Z+511);
 
 
-            String path = ".\\world";
+            String path = ".\\"+server.getWorldName();
             try {
                 createDirectory(Paths.get(path));
             } catch (IOException e) {
@@ -89,6 +90,7 @@ public class TerraPregen {
             if (!PregenState.startPregeneration(sender, min, max, dimension))   {
                 sender.sendMessage(new TextComponentString("A pregeneration task is already running!"));
             }
+            //if ()
         }
 
         @Override
