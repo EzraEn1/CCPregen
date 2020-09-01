@@ -1,5 +1,6 @@
 package io.github.ezraen.terrapregen;
 
+
 import net.daporkchop.ccpregen.CCPregen;
 import net.daporkchop.ccpregen.PregenState;
 import net.daporkchop.ccpregen.command.PregenCommand;
@@ -15,12 +16,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Paths;
-import io.github.ezraen.bedrockheadless.Main;
 
-import static java.nio.file.Files.createDirectory;
 
-public class TerraPregen {
+public class TerraPregen extends CCPregen {
 
     public static class TerraPregenCommand extends PregenCommand {
         @Override
@@ -54,14 +52,14 @@ public class TerraPregen {
             //BlockPos max = new BlockPos(X+511,(alt*256)+255,Z+511);
 
 
-            String path = ".\\"+server.getWorldName();
-            try {
+            String path = ".\\"+server.getFolderName();
+            /* try {   // This seems unnecessary when using the default world folder.
                 createDirectory(Paths.get(path));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            } */
 
-            File Alti = new File(path+"\\height.txt");
+            File Alti = new File(path+"\\zero_offset.txt");
             try {
                 if (Alti.createNewFile()){
                     System.out.println("File at " +path+ " created");
@@ -71,7 +69,7 @@ public class TerraPregen {
             }
             Writer wr = null;
             try {
-                wr = new FileWriter(path+"\\height.txt");
+                wr = new FileWriter(path+"\\zero_offset.txt");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -90,7 +88,7 @@ public class TerraPregen {
             if (!PregenState.startPregeneration(sender, min, max, dimension))   {
                 sender.sendMessage(new TextComponentString("A pregeneration task is already running!"));
             }
-            //if ()
+
         }
 
         @Override

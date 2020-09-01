@@ -26,14 +26,22 @@ import net.daporkchop.ccpregen.command.PregenCommand;
 import net.daporkchop.ccpregen.command.PregenCubesCommand;
 import net.daporkchop.ccpregen.command.ResumePregenCommand;
 import net.daporkchop.ccpregen.command.StopPregenCommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.Logger;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 @Mod(modid = CCPregen.MODID,
         name = CCPregen.NAME,
@@ -52,8 +60,19 @@ public class CCPregen {
         logger = event.getModLog();
     }
 
+    String[] regionXZ = null;
+
     @EventHandler
-    public void serverStarting(FMLServerStartingEvent event) {
+    public void init(FMLInitializationEvent event) throws IOException {
+        File RegionRequest = new File(".\\region_request.txt");
+        BufferedReader br = new BufferedReader(new FileReader(RegionRequest));
+
+        String regionRaw = br.readLine();
+        regionXZ = regionRaw.split("\\.");
+    }
+
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event) throws IOException {
         PermissionAPI.registerNode(MODID + ".command.ccpregen", DefaultPermissionLevel.OP, "Allows to run the /ccpregen command");
         PermissionAPI.registerNode(MODID + ".command.ccpregen_cubes", DefaultPermissionLevel.OP, "Allows to run the /ccpregen_cubes command");
         PermissionAPI.registerNode(MODID + ".command.ccpregen_stop", DefaultPermissionLevel.OP, "Allows to run the /ccpregen_stop command");
@@ -69,6 +88,13 @@ public class CCPregen {
         event.registerServerCommand(new TerraPregen.TerraPregenCommand());
 
         PregenState.loadState(event.getServer());
+
+        //this.sender = sender;
+        ICommandSender sender = new RConConsoleSource(event.getServer());
+
+        event.getServer().commandManager.executeCommand(sender,"terrapregen "+regionXZ[0]+" "+regionXZ[1]);
+        //logger.log(RConConsoleSource.getLogContents());
+
     }
 
     @EventHandler

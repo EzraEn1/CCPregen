@@ -20,6 +20,8 @@
 
 package net.daporkchop.ccpregen;
 
+//import io.github.ezraen.bedrockheadless.*;
+
 import io.github.opencubicchunks.cubicchunks.api.util.XYZMap;
 import io.github.opencubicchunks.cubicchunks.api.world.ICubeProviderServer;
 import io.github.opencubicchunks.cubicchunks.api.world.ICubicWorldServer;
@@ -32,12 +34,15 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.WorldWorkerManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.stream.DoubleStream;
 
-import static java.lang.Long.*;
+import static java.lang.Long.parseUnsignedLong;
 import static net.daporkchop.ccpregen.PregenState.*;
 
 /**
@@ -166,12 +171,38 @@ public class PregenerationWorker implements WorldWorkerManager.IWorker {
         boolean hasWork = active && parseUnsignedLong(generated) < parseUnsignedLong(total);
         if (!hasWork) {
             this.sender.sendMessage(new TextComponentString("Generation complete."));
+
             if (this.world != null && this.keepingLoaded) {
                 DimensionManager.keepDimensionLoaded(dim, false);
             }
             active = false;
+            try {
+                Runtime rt = Runtime.getRuntime();
+                Process pr = rt.exec("java -jar ./cubicchunksconverter-FINAL-all.jar "+".\\" + sender.getServer().getFolderName()+" .\\world");
+                //Hijack.main(new String[]{".\\" + sender.getServer().getFolderName(), ".\\world"});
+                new Thread(new Runnable() {
+                    public void run() {
+                        BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+                        String line = null;
+
+                        try {
+                            while ((line = input.readLine()) != null)
+                                System.out.println(line);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+                pr.waitFor();
+                this.sender.getServer().initiateShutdown();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
             persistState();
             ((ICubicWorldServer) this.world).unloadOldCubes();
+
+
         }
         return !paused && hasWork;
     }

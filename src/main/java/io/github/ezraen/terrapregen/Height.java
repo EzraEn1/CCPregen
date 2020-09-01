@@ -28,7 +28,7 @@ public class Height {
         int alt = (int) Math.round(height)-40;
         //int alt = (int) height/256; // Swap commenting with line above if increments of 256 are needed
 
-        return alt;
+        return alt; // This number is the start of the y-band, will have to offset back in the final world
 
     }
 }
